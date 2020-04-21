@@ -82,19 +82,23 @@ def DibujarPunto(punto):
     limites(5)
 
 #Inteno fallido(RegProb = [probAr, probAb, probI, probD])
-def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
-    res = r.randint(0, 10)/40
+def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, cantidad):
+    res = 10
+    if RegProb[0] + res > 1:
+        res = r.randint(0, 10)/cantidad
         
-    if abajo > arriba and RegProb[1] + res <= 1:
+    if abajo > arriba:
         RegProb[0] = RegProb[0] - res
         RegProb[1] = RegProb[1] + res
     else:
         RegProb[0] = RegProb[0] + res
         RegProb[1] = RegProb[1] - res
 
-    res = r.randint(0, 10)/40
+    res = 10
+    if RegProb[3] + res > 1:
+        res = r.randint(0, 10)/cantidad
         
-    if derecha > izquierda and RegProb[3] + res <= 1:
+    if derecha > izquierda:
         RegProb[2] = RegProb[2] - res
         RegProb[3] = RegProb[3] + res
     else:
@@ -104,18 +108,22 @@ def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
     return RegProb
 
 def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad):
-    res = r.randint(0, 10)/cantidad
+    res = 10
+    if RegProb[0] + res > 1:
+        res = r.randint(0, 10)/cantidad
         
-    if abajo > arriba and RegProb[0] + res <= 1:
+    if abajo > arriba:
         RegProb[0] = RegProb[0] + res
         RegProb[1] = RegProb[1] - res
     else:
         RegProb[0] = RegProb[0] - res
         RegProb[1] = RegProb[1] + res
 
-    res = r.randint(0, 10)/40
+    res = 10
+    if RegProb[2] + res > 1:
+        res = r.randint(0, 10)/cantidad
         
-    if derecha > izquierda and RegProb[2] + res <= 1:
+    if derecha > izquierda:
         RegProb[2] = RegProb[2] + res
         RegProb[3] = RegProb[3] - res
     else:
@@ -160,6 +168,7 @@ def CuadradoLejano(punto, x):
 #MAIN
 x = int(input("Introduce los limites de movimiento(Recomendado 700): "))
 punto = Punto()
+t.speed(0)
 
 conseguido = False
 
@@ -191,10 +200,14 @@ while not conseguido:
     
     #Se ha alejado
     if HaPasadoLejos(PuntosLejanos, RegPuntos):
-        CambiarProb(RegProb)
+        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
     #Ha pasado cerca
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
-        RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda)
+        i = r.randint(0, 10)
+        if i % 2 == 0:
+            RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, i * 10)
+        else:
+            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, i * 10)
     #Si ha pasado o por las dos o por ninguna zona cítica
     else:
         RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 40)
