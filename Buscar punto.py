@@ -177,6 +177,7 @@ izquierda = 0
 
 #Preparativos para la búsqueda
 while not conseguido:
+    conseguido = True
     
     #Dibuja
     t.clear()
@@ -205,6 +206,7 @@ while not conseguido:
     derecha = 0
     izquierda = 0
     contador = 0
+    RegPuntos = []
 
     #Entra en el bucle en el que busca
     continuar = True
@@ -212,7 +214,6 @@ while not conseguido:
         
         #Inicializa tiempo de búsqueda y puntos por los que ha pasado
         contador += 1
-        RegPuntos = []
 
         #Da pasos según la probavilidad y guarda el punto al que llega en RegPuntos
         i = r.randint(0, 100)
