@@ -8,13 +8,13 @@ import math
 #Para ver si se acerca o se aleja(Esto es lo que tiene pinta de estar mal)
 def HaPasadoCerca(PuntosCercanos, lista):
     for row in lista:
-        if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[0] >= PuntosCercanos[2][1]:
+        if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[1] >= PuntosCercanos[2][1]:
             return True
     return False
 
 def HaPasadoLejos(PuntosLejanos, lista):
     for row in lista:
-        if row[0] <= PuntosLejanos[1][0] or row[0] >= PuntosLejanos[0][0] or row[1] >= PuntosLejanos[1][1] or row[0] <= PuntosLejanos[2][1]:
+        if row[0] <= PuntosLejanos[1][0] or row[0] >= PuntosLejanos[0][0] or row[1] >= PuntosLejanos[1][1] or row[1] <= PuntosLejanos[2][1]:
             return True
     return False
 
@@ -177,7 +177,6 @@ izquierda = 0
 
 #Preparativos para la búsqueda
 while not conseguido:
-    conseguido = True
     
     #Dibuja
     t.clear()
