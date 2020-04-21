@@ -124,6 +124,14 @@ def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad)
 
     return RegProb
 
+def CambiarProb(RegProb):
+    aux = RegProb[0]
+    RegProb[0] = RegProb[1]
+    RegProb[1] = aux
+    aux = RegProb[2]
+    RegProb[2] = RegProb[3]
+    RegProb[3] = aux
+
 #Dibujar cuadrado cercano al punto y dar esquinas
 def CuadradoCercano(punto):
     t.color("green")
@@ -183,7 +191,7 @@ while not conseguido:
     
     #Se ha alejado
     if HaPasadoLejos(PuntosLejanos, RegPuntos):
-        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
+        RegProb = CambiarProb(RegProb)
     #Ha pasado cerca
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
         RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda)
