@@ -85,42 +85,42 @@ def DibujarPunto(punto):
 def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
     res = r.randint(0, 10)/40
         
-        if abajo > arriba and probAb + res <= 1:
-            RegProb[0] = RegProb[0] - res
-            RegProb[1] = RegProb[1] + res
-        else:
-            RegProb[0] = RegProb[0] + res
-            RegProb[1] = RegProb[1] - res
+    if abajo > arriba and probAb + res <= 1:
+        RegProb[0] = RegProb[0] - res
+        RegProb[1] = RegProb[1] + res
+    else:
+        RegProb[0] = RegProb[0] + res
+        RegProb[1] = RegProb[1] - res
 
-        res = r.randint(0, 10)/40
+    res = r.randint(0, 10)/40
         
-        if derecha > izquierda and probD + res <= 1:
-            RegProb[2] = RegProb[2] - res
-            RegProb[3] = RegProb[3] + res
-        else:
-            RegProb[2] = RegProb[2] + res
-            RegProb[3] = RegProb[3] - res
+    if derecha > izquierda and probD + res <= 1:
+        RegProb[2] = RegProb[2] - res
+        RegProb[3] = RegProb[3] + res
+    else:
+        RegProb[2] = RegProb[2] + res
+        RegProb[3] = RegProb[3] - res
 
     return RegProb
 
 def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad):
     res = r.randint(0, 10)/cantidad
         
-        if abajo > arriba and probAb + res <= 1:
-            RegProb[0] = RegProb[0] + res
-            RegProb[1] = RegProb[1] - res
-        else:
-            RegProb[0] = RegProb[0] - res
-            RegProb[1] = RegProb[1] + res
+    if abajo > arriba and probAb + res <= 1:
+        RegProb[0] = RegProb[0] + res
+        RegProb[1] = RegProb[1] - res
+    else:
+        RegProb[0] = RegProb[0] - res
+        RegProb[1] = RegProb[1] + res
 
-        res = r.randint(0, 10)/40
+    res = r.randint(0, 10)/40
         
-        if derecha > izquierda and probD + res <= 1:
-            RegProb[2] = RegProb[2] + res
-            RegProb[3] = RegProb[3] - res
-        else:
-            RegProb[2] = RegProb[2] - res
-            RegProb[3] = RegProb[3] + res
+    if derecha > izquierda and probD + res <= 1:
+        RegProb[2] = RegProb[2] + res
+        RegProb[3] = RegProb[3] - res
+    else:
+        RegProb[2] = RegProb[2] - res
+        RegProb[3] = RegProb[3] + res
 
     return RegProb
 
