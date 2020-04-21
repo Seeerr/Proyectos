@@ -302,3 +302,6 @@ while not conseguido:
 
 if conseguido:
     print("\n\nYa lo has encontrado bro")
+
+    
+#Voy a editar un poco esto a ver que lo que
