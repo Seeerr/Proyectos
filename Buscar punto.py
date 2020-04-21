@@ -85,7 +85,7 @@ def DibujarPunto(punto):
 def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
     res = r.randint(0, 10)/40
         
-    if abajo > arriba and probAb + res <= 1:
+    if abajo > arriba and RegProb[1] + res <= 1:
         RegProb[0] = RegProb[0] - res
         RegProb[1] = RegProb[1] + res
     else:
@@ -94,7 +94,7 @@ def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
 
     res = r.randint(0, 10)/40
         
-    if derecha > izquierda and probD + res <= 1:
+    if derecha > izquierda and RegProb[3] + res <= 1:
         RegProb[2] = RegProb[2] - res
         RegProb[3] = RegProb[3] + res
     else:
@@ -106,7 +106,7 @@ def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
 def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad):
     res = r.randint(0, 10)/cantidad
         
-    if abajo > arriba and probAb + res <= 1:
+    if abajo > arriba and RegProb[0] + res <= 1:
         RegProb[0] = RegProb[0] + res
         RegProb[1] = RegProb[1] - res
     else:
@@ -115,7 +115,7 @@ def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad)
 
     res = r.randint(0, 10)/40
         
-    if derecha > izquierda and probD + res <= 1:
+    if derecha > izquierda and RegProb[2] + res <= 1:
         RegProb[2] = RegProb[2] + res
         RegProb[3] = RegProb[3] - res
     else:
@@ -159,7 +159,6 @@ conseguido = False
 RegProb = [0.5, 0.5, 0.5, 0.5]   #(RegProb = [probAr, probAb, probI, probD])
 RegPuntos = []
 PuntosCercanos = []
-RegProb = []
 
 
 arriba = 0
