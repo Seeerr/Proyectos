@@ -191,7 +191,7 @@ while not conseguido:
     
     #Se ha alejado
     if HaPasadoLejos(PuntosLejanos, RegPuntos):
-        RegProb = CambiarProb(RegProb)
+        CambiarProb(RegProb)
     #Ha pasado cerca
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
         RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda)
