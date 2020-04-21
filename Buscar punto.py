@@ -81,23 +81,48 @@ def DibujarPunto(punto):
     t.down()
     limites(5)
 
-#Inteno fallido
-def DistribuirProb(probAr, probAb, probD, probI, arriba, abajo, derecha, izquierda):
-    res = r.randint(1, 10)
-    
-    if abajo > arriba:
-        probAr = probAr * res
-        probAb = probAb / res
-    else:
-        probAr = probAr / res
-        probAb = probAb * res
+#Inteno fallido(RegProb = [probAr, probAb, probI, probD])
+def DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda):
+    res = r.randint(0, 10)/40
         
-    if derecha > izquierda:
-        probI = probI * res
-        probD = probD / res
-    else:
-        probI = probI / res
-        probD = probD * res
+        if abajo > arriba and probAb + res <= 1:
+            RegProb[0] = RegProb[0] - res
+            RegProb[1] = RegProb[1] + res
+        else:
+            RegProb[0] = RegProb[0] + res
+            RegProb[1] = RegProb[1] - res
+
+        res = r.randint(0, 10)/40
+        
+        if derecha > izquierda and probD + res <= 1:
+            RegProb[2] = RegProb[2] - res
+            RegProb[3] = RegProb[3] + res
+        else:
+            RegProb[2] = RegProb[2] + res
+            RegProb[3] = RegProb[3] - res
+
+    return RegProb
+
+def DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, cantidad):
+    res = r.randint(0, 10)/cantidad
+        
+        if abajo > arriba and probAb + res <= 1:
+            RegProb[0] = RegProb[0] + res
+            RegProb[1] = RegProb[1] - res
+        else:
+            RegProb[0] = RegProb[0] - res
+            RegProb[1] = RegProb[1] + res
+
+        res = r.randint(0, 10)/40
+        
+        if derecha > izquierda and probD + res <= 1:
+            RegProb[2] = RegProb[2] + res
+            RegProb[3] = RegProb[3] - res
+        else:
+            RegProb[2] = RegProb[2] - res
+            RegProb[3] = RegProb[3] + res
+
+    return RegProb
 
 #Dibujar cuadrado cercano al punto y dar esquinas
 def CuadradoCercano(punto):
@@ -131,11 +156,7 @@ punto = Punto()
 conseguido = False
 
 #Registros
-probAr = 0.5
-probAb = 0.5
-probD = 0.5
-probI = 0.5
-
+RegProb = [0.5, 0.5, 0.5, 0.5]   #(RegProb = [probAr, probAb, probI, probD])
 RegPuntos = []
 PuntosCercanos = []
 RegProb = []
@@ -159,74 +180,17 @@ while not conseguido:
     PuntosCercanos = CuadradoCercano(punto)
     PuntosLejanos = CuadradoLejano(punto, x)
 
-    #Distribuye probavilidades según si ha pasado cerca o no
-    if HaPasadoCerca(PuntosCercanos, RegPuntos):
-        res = r.randint(0, 10)/40
-        
-        if abajo > arriba and probAb + res <= 1:
-            probAr = probAr - res
-            probAb = probAb + res
-        else:
-            probAr = probAr + res
-            probAb = probAb - res
-
-        res = r.randint(0, 10)/40
-        
-        if derecha > izquierda and probD + res <= 1:
-            probI = probI - res
-            probD = probD + res
-        else:
-            probI = probI + res
-            probD = probD - res
-
-        
-        
-    elif HaPasadoLejos(PuntosLejanos, RegPuntos):
-
-        #Si te has hacercado recientemente, repites su probavilidad
-        if not(RegProb == []):
-            probAr = RegProb[0]
-            probAb = RegProb[1]
-            probI = RegProb[2]
-            probD = RegProb[3]
-        
-        else:
-            res = r.randint(0, 10)/20
-            
-            if abajo > arriba and probAr + res <= 1:
-                probAr = probAr + res
-                probAb = probAb - res
-            else:
-                probAr = probAr - res
-                probAb = probAb + res
-
-            res = r.randint(0, 10)/40
-            
-            if derecha > izquierda and probI + res <= 1:
-                probI = probI + res
-                probD = probD - res
-            else:
-                probI = probI - res
-                probD = probD + res
-
+    #MODIFICAR PROBAVILIDADES SEGÚN LO QUE HA PASADO
+    
+    #Se ha alejado
+    if HaPasadoLejos(PuntosLejanos, RegPuntos):
+        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
+    #Ha pasado cerca
+    elif HaPasadoCerca(PuntosCercanos, RegPuntos):
+        RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda)
+    #Si ha pasado o por las dos o por ninguna zona cítica
     else:
-        res = r.randint(0, 10)/20
-        
-        if abajo > arriba and probAr + res <= 1:
-            probAr = probAr + res
-            probAb = probAb - res
-        else:
-            probAr = probAr - res
-            probAb = probAb + res
-
-        res = r.randint(0, 10)/40
-        
-        if derecha > izquierda and probI + res <= 1:
-            probI = probI + res
-            probD = probD - res
-        else:
-            probI = probI - res
-            probD = probD + res
+        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 40)
 
     #Inicializa registros de los pasos que ha dado
     arriba = 0
@@ -245,7 +209,7 @@ while not conseguido:
 
         #Da pasos según la probavilidad y guarda el punto al que llega en RegPuntos
         i = r.randint(0, 100)
-        if i <= 100 * probD:  
+        if i <= 100 * RegProb[3]:  
             Derecha()
             derecha += 1
         else:    
@@ -256,7 +220,7 @@ while not conseguido:
         if not EstaEnLista(RegPuntos, puntoP):
             RegPuntos.append(puntoP)
         
-        if i <= 100 * probAr:    
+        if i <= 100 * RegProb[0]:    
             Arriba()
             arriba += 1
         else:    
@@ -286,13 +250,12 @@ while not conseguido:
 
     #Un poco de información para el que lo ejecuta
     print("\nRegistro de movimientos:\n  Abajo: " + str(abajo) + "\n  Arriba: " + str(arriba) + "\n  Izquierda: " + str(izquierda) + "\n  Derecha: " + str(derecha))
-    print("\nProb de ir a:\n  Abajo: " + str(probAb) + "\n  Arriba: " + str(probAr) + "\n  Izquierda: " + str(probI) + "\n  Derecha: " + str(probD))
+    print("\nProb de ir a:\n  Abajo: " + str(RegProb[1]) + "\n  Arriba: " + str(RegProb[0]) + "\n  Izquierda: " + str(RegProb[2]) + "\n  Derecha: " + str(RegProb[3]))
     if HaPasadoCerca(PuntosCercanos, RegPuntos) and HaPasadoLejos(PuntosLejanos, RegPuntos):
         print("\nMucha vuelta")
     elif HaPasadoLejos(PuntosLejanos, RegPuntos):
         print("\nNi te has acercado")
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
-        RegProb = [probAr, probAb, probI, probD]
         print("\nHas estado cerca")
     else:
         print("\nSin mas")
@@ -302,6 +265,3 @@ while not conseguido:
 
 if conseguido:
     print("\n\nYa lo has encontrado bro")
-
-    
-#Voy a editar un poco esto a ver que lo que
