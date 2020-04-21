@@ -5,7 +5,7 @@ import math
 
 #Funciones 
 
-#Para ver si se acerca o se aleja
+#Para ver si se acerca o se aleja(Esto es lo que tiene pinta de estar mal)
 def HaPasadoCerca(PuntosCercanos, lista):
     for row in lista:
         if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[0] >= PuntosCercanos[2][1]:
