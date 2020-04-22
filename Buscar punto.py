@@ -6,6 +6,13 @@ import math
 #Funciones 
 
 #Para ver si se acerca o se aleja(Esto es lo que tiene pinta de estar mal)
+def PuntosFuera(PuntosLejanos, RegPuntos):
+    res = 0
+    for row in RegPuntos:
+        if row[0] <= PuntosLejanos[1][0] or row[0] >= PuntosLejanos[0][0] or row[1] >= PuntosLejanos[1][1] or row[1] <= PuntosLejanos[2][1]:
+            res += 1
+    return res
+
 def HaPasadoCerca(PuntosCercanos, lista):
     for row in lista:
         if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[1] >= PuntosCercanos[2][1]:
@@ -177,7 +184,7 @@ RegProb = [0.5, 0.5, 0.5, 0.5]   #(RegProb = [probAr, probAb, probI, probD])
 RegPuntos = []
 PuntosCercanos = []
 ProbCercana = []   #Registro base de probavilidades con las que más se acerca
-
+puntosFuera = 0
 
 arriba = 0
 abajo = 0
@@ -204,7 +211,7 @@ while not conseguido:
     #Se ha alejado
     if HaPasadoLejos(PuntosLejanos, RegPuntos):
         if ProbCercana == []:
-            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
+            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, x/puntosFuera)
         else:
             RegProb = ProbCercana
             ProbCercana = []
@@ -286,7 +293,8 @@ while not conseguido:
     if HaPasadoCerca(PuntosCercanos, RegPuntos) and HaPasadoLejos(PuntosLejanos, RegPuntos):
         print("\nMucha vuelta")
     elif HaPasadoLejos(PuntosLejanos, RegPuntos):
-        print("\nNi te has acercado")
+        puntosFuera = PuntosFuera(PuntosCercanos, RegPuntos)
+        print("\nNi te has acercado, puntos fuera = " + str(puntosFuera))
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
         ProbCercana = RegProb
         print("\nHas estado cerca")
@@ -297,4 +305,4 @@ while not conseguido:
 
 
 if conseguido:
-    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) + "intentos")
+    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) + " intentos, el punto se encuentra en [" + str(round(t.xcor())) +", " + round(str(t.ycor())) + "]")
