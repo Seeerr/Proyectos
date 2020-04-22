@@ -6,24 +6,39 @@ import math
 #Funciones 
 
 #Para ver si se acerca o se aleja(Esto es lo que tiene pinta de estar mal)
-def PuntosFuera(PuntosLejanos, RegPuntos):
-    res = 0
-    for row in RegPuntos:
-        if row[0] <= PuntosLejanos[1][0] or row[0] >= PuntosLejanos[0][0] or row[1] >= PuntosLejanos[1][1] or row[1] <= PuntosLejanos[2][1]:
-            res += 1
-    return res
+def PuntoDentro(esquinas, punto):
+    if punto[0] >= esquinas[1][0] and punto[0] <= esquinas[0][0] and punto[1] <= esquinas[1][1] and punto[1] >= esquinas[2][1]:
+        return True
+    return False
+
+def PuntoFuera(esquinas, punto):
+    if punto[0] <= esquinas[1][0] or punto[0] >= esquinas[0][0] or punto[1] >= esquinas[1][1] or punto[1] <= esquinas[2][1]:
+        return True
+    return False
 
 def HaPasadoCerca(PuntosCercanos, lista):
+    res = []
+    pasa = 0
+    count = 0
     for row in lista:
-        if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[1] >= PuntosCercanos[2][1]:
-            return True
-    return False
+        if PuntoDentro(PuntosCercanos, row):
+            pasa = 1
+            count += 1
+    res.append(pasa)
+    res.append(count)
+    return res
 
 def HaPasadoLejos(PuntosLejanos, lista):
+    res = []
+    pasa = 0
+    count = 0
     for row in lista:
-        if row[0] <= PuntosLejanos[1][0] or row[0] >= PuntosLejanos[0][0] or row[1] >= PuntosLejanos[1][1] or row[1] <= PuntosLejanos[2][1]:
-            return True
-    return False
+        if PuntoFuera(PuntosLejanos, row):
+            pasa = 1
+            count += 1
+    res.append(pasa)
+    res.append(count)
+    return res
 
 #Mira si un punto ya esta en una lista de puntos
 def EstaEnLista(lista, punto):
@@ -185,6 +200,9 @@ RegPuntos = []
 PuntosCercanos = []
 ProbCercana = []   #Registro base de probavilidades con las que más se acerca
 puntosFuera = 0
+puntosDentro = 0
+puntosLimbo = 0
+count = 0  #Vigila que no se quede pillado en unas probavilidades que le llevan fuera
 
 arriba = 0
 abajo = 0
@@ -207,24 +225,33 @@ while not conseguido:
     PuntosLejanos = CuadradoLejano(punto, x)
 
     #MODIFICAR PROBAVILIDADES SEGÚN LO QUE HA PASADO
-    
+
+    #Si ha pasado por las dos
+    if HaPasadoLejos(PuntosLejanos, RegPuntos)[0] == 1 and HaPasadoCerca(PuntosCercanos, RegPuntos)[0] == 1:
+        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 40)
+        count = 0
     #Se ha alejado
-    if HaPasadoLejos(PuntosLejanos, RegPuntos):
-        if ProbCercana == []:
-            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, x/puntosFuera)
+    elif HaPasadoLejos(PuntosLejanos, RegPuntos)[0] == 1:
+        if count == 10:
+            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda,10)
+            count = 0
+        elif ProbCercana == []:
+            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda,10/(puntosFuera/len(RegPuntos))**2)
         else:
             RegProb = ProbCercana
             ProbCercana = []
     #Ha pasado cerca
-    elif HaPasadoCerca(PuntosCercanos, RegPuntos):
+    elif HaPasadoCerca(PuntosCercanos, RegPuntos)[0] == 1:
+        count = 0
         i = r.randint(1, 10)
         if i % 2 == 0:
-            RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, i * 10)
+            RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, i * 10)  #Queria poner esto pero se me va: i * 10 * puntosDentro/len(RegPuntos)
         else:
             RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, i * 10)
     #Si ha pasado o por las dos o por ninguna zona cítica
     else:
-        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 40)
+        count = 0
+        RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, 40)
 
     #Inicializa registros de los pasos que ha dado
     arriba = 0
@@ -237,6 +264,7 @@ while not conseguido:
     #Entra en el bucle en el que busca
     continuar = True
     while continuar:
+        
         
         #Inicializa tiempo de búsqueda y puntos por los que ha pasado
         contador += 1
@@ -288,16 +316,18 @@ while not conseguido:
             continuar = False
 
     #Un poco de información para el que lo ejecuta
+    puntosFuera = HaPasadoLejos(PuntosLejanos, RegPuntos)[1]
+    puntosDentro = HaPasadoCerca(PuntosCercanos, RegPuntos)[1]
+    
     print("\nRegistro de movimientos:\n  Abajo: " + str(abajo) + "\n  Arriba: " + str(arriba) + "\n  Izquierda: " + str(izquierda) + "\n  Derecha: " + str(derecha))
     print("\nProb de ir a:\n  Abajo: " + str(RegProb[1]) + "\n  Arriba: " + str(RegProb[0]) + "\n  Izquierda: " + str(RegProb[2]) + "\n  Derecha: " + str(RegProb[3]))
-    if HaPasadoCerca(PuntosCercanos, RegPuntos) and HaPasadoLejos(PuntosLejanos, RegPuntos):
-        print("\nMucha vuelta")
-    elif HaPasadoLejos(PuntosLejanos, RegPuntos):
-        puntosFuera = PuntosFuera(PuntosCercanos, RegPuntos)
-        print("\nNi te has acercado, puntos fuera = " + str(puntosFuera))
-    elif HaPasadoCerca(PuntosCercanos, RegPuntos):
+    if HaPasadoCerca(PuntosCercanos, RegPuntos)[0] == 1 and HaPasadoLejos(PuntosLejanos, RegPuntos)[0] == 1:
+        print("\nMucha vuelta, proporcion puntos fuera = " + str(puntosFuera/len(RegPuntos)) + ", proporcion puntos dentro = " + str(puntosDentro/len(RegPuntos)))
+    elif HaPasadoLejos(PuntosLejanos, RegPuntos)[0] == 1:
+        print("\nNi te has acercado, proporcion puntos fuera = " + str(puntosFuera/len(RegPuntos)))
+    elif HaPasadoCerca(PuntosCercanos, RegPuntos)[0] == 1:
         ProbCercana = RegProb
-        print("\nHas estado cerca")
+        print("\nHas estado cerca, proporcion puntos dentro = " + str(puntosDentro/len(RegPuntos)))
     else:
         print("\nSin mas")
 
@@ -305,4 +335,4 @@ while not conseguido:
 
 
 if conseguido:
-    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) + " intentos, el punto se encuentra en [" + str(round(t.xcor())) +", " + round(str(t.ycor())) + "]")
+    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) + " intentos, el punto se encuentra en [" + str(RegPuntos[len(RegPuntos)-2]) + "]")
