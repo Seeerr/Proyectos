@@ -297,4 +297,4 @@ while not conseguido:
 
 
 if conseguido:
-    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) "intentos")
+    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos) + "intentos")
