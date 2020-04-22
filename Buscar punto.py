@@ -5,7 +5,7 @@ import math
 
 #Funciones 
 
-#Para ver si se acerca o se aleja
+#Para ver si se acerca o se aleja(Esto es lo que tiene pinta de estar mal)
 def HaPasadoCerca(PuntosCercanos, lista):
     for row in lista:
         if row[0] >= PuntosCercanos[1][0] and row[0] <= PuntosCercanos[0][0] and row[1] <= PuntosCercanos[1][1] and row[1] >= PuntosCercanos[2][1]:
@@ -176,16 +176,19 @@ conseguido = False
 RegProb = [0.5, 0.5, 0.5, 0.5]   #(RegProb = [probAr, probAb, probI, probD])
 RegPuntos = []
 PuntosCercanos = []
+ProbCercana = []   #Registro base de probavilidades con las que más se acerca
 
 
 arriba = 0
 abajo = 0
 derecha = 0
 izquierda = 0
+intentos =0
 
 
 #Preparativos para la búsqueda
 while not conseguido:
+    intentos += 1
     
     #Dibuja
     t.clear()
@@ -200,10 +203,14 @@ while not conseguido:
     
     #Se ha alejado
     if HaPasadoLejos(PuntosLejanos, RegPuntos):
-        RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
+        if ProbCercana == []:
+            RegProb = DistribuirProbEnContra(RegProb, arriba, abajo, derecha, izquierda, 10)
+        else:
+            RegProb = ProbCercana
+            ProbCercana = []
     #Ha pasado cerca
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
-        i = r.randint(0, 10)
+        i = r.randint(1, 10)
         if i % 2 == 0:
             RegProb = DistribuirProbAFabor(RegProb, arriba, abajo, derecha, izquierda, i * 10)
         else:
@@ -241,10 +248,7 @@ while not conseguido:
             RegPuntos.append(puntoP)
 
         #Encontrar
-        if round(t.xcor()) == punto[0] and round(t.ycor()) == punto[1]:
-            print("Lo has encontrado")
-            continuar = False
-            conseguido = True
+        encontrado1 = round(t.xcor()) == punto[0] and round(t.ycor()) == punto[1]
         
         if i <= 100 * RegProb[0]:    
             Arriba()
@@ -259,7 +263,9 @@ while not conseguido:
 
         #COSAS QUE LO SACAN DEL BUCLE DE BÚSQUEDA
         #Encontrar
-        if round(t.xcor()) == punto[0] and round(t.ycor()) == punto[1]:
+        encontrado2 = round(t.xcor()) == punto[0] and round(t.ycor()) == punto[1]
+        
+        if encontrado1 or encontrado2:
             print("Lo has encontrado")
             continuar = False
             conseguido = True
@@ -282,6 +288,7 @@ while not conseguido:
     elif HaPasadoLejos(PuntosLejanos, RegPuntos):
         print("\nNi te has acercado")
     elif HaPasadoCerca(PuntosCercanos, RegPuntos):
+        ProbCercana = RegProb
         print("\nHas estado cerca")
     else:
         print("\nSin mas")
@@ -290,4 +297,4 @@ while not conseguido:
 
 
 if conseguido:
-    print("\n\nYa lo has encontrado bro")
+    print("\n\nYa lo has encontrado bro\n Lo ha encontrado en " + str(intentos))
