@@ -239,6 +239,12 @@ while not conseguido:
         puntoP = [round(t.xcor()), round(t.ycor())]
         if not EstaEnLista(RegPuntos, puntoP):
             RegPuntos.append(puntoP)
+
+        #Encontrar
+        if round(t.xcor()) == punto[0] and round(t.ycor()) == punto[1]:
+            print("Lo has encontrado")
+            continuar = False
+            conseguido = True
         
         if i <= 100 * RegProb[0]:    
             Arriba()
