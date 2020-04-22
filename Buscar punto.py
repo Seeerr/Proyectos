@@ -141,13 +141,13 @@ def CambiarProb(RegProb):
     RegProb[3] = aux
 
 #Dibujar cuadrado cercano al punto y dar esquinas
-def CuadradoCercano(punto):
+def CuadradoCercano(punto, x):
     t.color("green")
     t.up()
     t.setx(punto[0])
     t.sety(punto[1])
     t.down()
-    res = limites(100)
+    res = limites(x)
     t.color("black")
     return res
 
@@ -196,7 +196,7 @@ while not conseguido:
     
     limites(x)
     DibujarPunto(punto)
-    PuntosCercanos = CuadradoCercano(punto)
+    PuntosCercanos = CuadradoCercano(punto, x/7)
     PuntosLejanos = CuadradoLejano(punto, x)
 
     #MODIFICAR PROBAVILIDADES SEGÚN LO QUE HA PASADO
